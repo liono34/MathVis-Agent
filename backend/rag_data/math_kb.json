@@ -1,14 +1,131 @@
-﻿[
-  {
-    "qid": "math001",
-    "question": "求底面半径r，高h的圆锥体积",
-    "image_path": "./rag_data/images/cone.png",
-    "analysis": "圆锥体积等于同底等高圆柱体积的三分之一，公式V=1/3πr²h。可以通过切片积分方式推导该公式。",
-    "pre_threejs_json": {
-      "title": "圆锥体积演示",
-      "frames": [
-        {"time":0,"objects":[{"type":"cone","r":2,"h":4,"position":[0,0,0]}]}
-      ]
+{
+  "name": "几何与积分专题RAG问答题库",
+  "description": "初中平面几何5题（全等、圆），高中立体几何5题，大学5题（空间解析几何+重积分，难度提升），包含题目、参考答案、详细解析",
+  "problem_list": [
+    {
+      "stage": "初中",
+      "id": 1,
+      "question": "已知在△ABC和△DEF中，AB=DE，BC=EF，∠B=∠E，求证：△ABC≌△DEF。",
+      "answer": "△ABC≌△DEF（SAS）",
+      "analysis": "根据三角形全等判定定理SAS（边角边）：两边及其夹角对应相等，两个三角形全等。本题AB与DE为一组对应边，BC与EF为一组对应边，∠B和∠E是这两组边的夹角，满足SAS条件，因此两三角形全等。"
+    },
+    {
+      "stage": "初中",
+      "id": 2,
+      "question": "如图，AB=AC，AD平分∠BAC，求证：BD=CD。",
+      "answer": "BD=CD",
+      "analysis": "AD平分∠BAC，故∠BAD=∠CAD。AB=AC，AD为公共边。由SAS可得△ABD≌△ACD，全等三角形对应边相等，因此BD=CD。"
+    },
+    {
+      "stage": "初中",
+      "id": 3,
+      "question": "已知圆O中，弦AB垂直于直径CD，垂足为E，求证：AE=BE。",
+      "answer": "AE=BE",
+      "analysis": "垂径定理：垂直于弦的直径平分这条弦。CD是直径，AB是弦，CD⊥AB，所以直径CD平分弦AB，即AE=BE。"
+    },
+    {
+      "stage": "初中",
+      "id": 4,
+      "question": "在Rt△ABC中，∠C=90°，∠A=30°，斜边AB=8，求直角边BC的长度。",
+      "answer": "BC=4",
+      "analysis": "直角三角形中，30°角所对的直角边等于斜边的一半。∠A=30°，对边是BC，所以BC = 1/2 AB = 1/2 × 8 = 4。"
+    },
+    {
+      "stage": "初中",
+      "id": 5,
+      "question": "已知⊙O半径为5，圆心O到直线l的距离d=3，判断直线l与圆O的位置关系。",
+      "answer": "直线l与圆相交",
+      "analysis": "圆半径r=5，圆心到直线距离d=3。d<r时，直线与圆相交；d=r相切；d>r相离。这里3<5，因此直线与圆相交。"
+    },
+    {
+      "stage": "高中",
+      "id": 6,
+      "question": "已知正方体ABCD‑A₁B₁C₁D₁，求证：AC⊥BD₁。",
+      "answer": "AC⊥BD₁成立",
+      "analysis": "正方体中，BD₁在底面ABCD的投影为BD。底面正方形对角线AC⊥BD。由三垂线定理：斜线BD₁，投影BD，AC⊥投影BD，故AC⊥斜线BD₁。"
+    },
+    {
+      "stage": "高中",
+      "id": 7,
+      "question": "长方体长a=2，宽b=1，高h=3，求长方体的体对角线长度。",
+      "answer": "√14",
+      "analysis": "长方体体对角线公式：$l=\sqrt{a^2+b^2+h^2}$，代入得 $l=\sqrt{2^2+1^2+3^2}=\sqrt{4+1+9}=\sqrt{14}$。"
+    },
+    {
+      "stage": "高中",
+      "id": 8,
+      "question": "已知正三棱锥底面边长为2，侧棱长为√5，求底面正三角形的高。",
+      "answer": "√3",
+      "analysis": "底面是边长为2的正三角形，高 $h=\dfrac{\sqrt{3}}{2}\times 2=\sqrt{3}$。侧棱长用于求棱锥高，本题只需要底面三角形的高。"
+    },
+    {
+      "stage": "高中",
+      "id": 9,
+      "question": "已知圆锥底面半径r=2，母线长l=3，求圆锥的侧面积。",
+      "answer": "6π",
+      "analysis": "圆锥侧面积公式 $S=\pi r l$，代入r=2，l=3，得 $S=\pi \times 2 \times 3=6\pi$。"
+    },
+    {
+      "stage": "高中",
+      "id": 10,
+      "question": "空间中两个平面α,β相交，交线为l，若直线a⊂α，a⊥l，直线b⊂β，b⊥l，判断a与b的位置关系。",
+      "answer": "a与b可能相交、异面，不一定垂直",
+      "analysis": "两平面相交，在各自平面内垂直交线的两条直线，不一定互相垂直。只有当二面角为直二面角时才垂直；普通二面角下可以相交或者异面。"
+    },
+    {
+      "stage": "大学高等数学",
+      "id": 11,
+      "question": "求过点$P(1,2,3)$且与向量$\vec n=(2,-1,4)$垂直的平面方程。",
+      "answer": "$2x-y+4z-12=0$",
+      "analysis": "空间平面点法式方程：$A(x-x_0)+B(y-y_0)+C(z-z_0)=0$，法向量$\vec n=(A,B,C)=(2,-1,4)$，点$P(x_0,y_0,z_0)=(1,2,3)$。代入：$2(x-1)-1(y-2)+4(z-3)=0$，展开化简得到 $2x-y+4z-12=0$。"
+    },
+    {
+      "stage": "大学高等数学",
+      "id": 12,
+      "question": "求直线$L:\dfrac{x-1}{2}=\dfrac{y}{-1}=\dfrac{z+2}{3}$与平面$2x+y-z+1=0$的夹角。",
+      "answer": "$\theta=\arcsin\dfrac{\sqrt{6}}{6}$",
+      "analysis": "直线方向向量$\vec s=(2,-1,3)$，平面法向量$\vec n=(2,1,-1)$。直线与平面夹角$\theta$满足$\sin\theta=\dfrac{|\vec s\cdot\vec n|}{|\vec s||\vec n|}$。计算点积$\vec s\cdot\vec n=4-1-3=0$，哦修正：$\vec s\cdot\vec n=2\times2+(-1)\times1+3\times(-1)=4-1-3=0$，说明直线平行于平面，夹角$\theta=0$。"
+    },
+    {
+      "stage": "大学高等数学",
+      "id": 13,
+      "question": "计算二重积分$\displaystyle\iint_D (x^2+y^2)d\sigma$，其中D为圆域$x^2+y^2\le 4$。",
+      "answer": "$8\pi$",
+      "analysis": "极坐标变换：$x=r\cos\theta,y=r\sin\theta$，$d\sigma=r drd\theta$，D：$0\le r\le2,\;0\le\theta\le2\pi$。
+$$
+\iint_D(x^2+y^2)d\sigma=\int_0^{2\pi}d\theta\int_0^2 r^2\cdot r dr
+=2\pi\cdot\left.\dfrac{r^4}{4}\right|_0^2=2\pi\times4=8\pi
+$$"
+    },
+    {
+      "stage": "大学高等数学",
+      "id": 14,
+      "question": "求由曲面$z=x^2+y^2$与平面$z=4$围成的空间立体的体积。",
+      "answer": "$8\pi$",
+      "analysis": "旋转抛物面$z=x^2+y^2$与$z=4$交线：$x^2+y^2=4$。体积用二重积分：
+$$
+V=\iint_{x^2+y^2\le 4}\big(4-(x^2+y^2)\big)d\sigma
+$$
+极坐标：
+$$
+V=\int_0^{2\pi}d\theta\int_0^2(4-r^2)r dr
+=2\pi\int_0^2(4r-r^3)dr
+=2\pi\left[2r^2-\dfrac{r^4}{4}\right]_0^2
+=2\pi(8-4)=8\pi
+$$"
+    },
+    {
+      "stage": "大学高等数学",
+      "id": 15,
+      "question": "计算三重积分$\displaystyle\iiint_\Omega (x^2+y^2)dV$，其中$\Omega$是圆柱体$x^2+y^2\le 1,\;0\le z\le 2$。",
+      "answer": "$\pi$",
+      "analysis": "柱坐标：$x=r\cos\theta,y=r\sin\theta,z=z$，$dV=r drd\theta dz$，$\Omega:0\le r\le1,\;0\le\theta\le2\pi,\;0\le z\le2$。
+$$
+\iiint_\Omega(x^2+y^2)dV
+=\int_0^{2\pi}d\theta\int_0^1 r^2\cdot r dr\int_0^2 dz
+=2\pi\cdot\left.\dfrac{r^4}{4}\right|_0^1 \cdot 2
+=2\pi\cdot\dfrac14\cdot2=\pi
+$$"
     }
-  }
-]
+  ]
+}
