@@ -1,0 +1,14 @@
+
+
+# ---------- 大模型智谱配置 ----------
+ZHIPU_API_KEY=填入你的智谱开放平台API Key
+LLM_MODEL=glm-4.7-flash
+
+# ---------- Upstash 云端Redis配置 ----------
+REDIS_URL=填入完整upstash redis连接地址，格式rediss://default:xxx@xxx.upstash.io:6379
+
+# ---------- 项目运行环境 ----------
+APP_ENV=development
+DEBUG=True
+
+SESSION_EXPIRE_SECONDS=7200

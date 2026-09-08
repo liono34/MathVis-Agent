@@ -1,0 +1,14 @@
+﻿[
+  {
+    "qid": "math001",
+    "question": "求底面半径r，高h的圆锥体积",
+    "image_path": "./rag_data/images/cone.png",
+    "analysis": "圆锥体积等于同底等高圆柱体积的三分之一，公式V=1/3πr²h。可以通过切片积分方式推导该公式。",
+    "pre_threejs_json": {
+      "title": "圆锥体积演示",
+      "frames": [
+        {"time":0,"objects":[{"type":"cone","r":2,"h":4,"position":[0,0,0]}]}
+      ]
+    }
+  }
+]

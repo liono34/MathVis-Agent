@@ -1,0 +1,19 @@
+
+# 智谱大模型
+ZHIPU_API_KEY=57be19d62d3340c09f8f70082cc0f2ee.kal0znsFHUQeEQrH
+LLM_MODEL=glm-4.7-flash
+
+# Upstash Redis
+REDIS_URL=rediss://default:gQAAAAAAAr2iAAIgcDIwOTllNTk0NWZjZGI0MWM3OTdjNTAxNGI0NWE2N2IxOA@primary-monkfish-179618.upstash.io:6379
+
+
+APP_ENV=development
+DEBUG=True
+SESSION_EXPIRE_SECONDS=7200
+
+# 百智图片识别
+BAIZHI_API_KEY=sk-QS0V5afex6Xy2K98SzNZxmBLPSUeQjusW1Oqiqysf4s
+BAIZHI_API_BASE=https://image-analysis.app.baizhi.cloud/openapi/v1
+
+
+VISION_ENDPOINT=https://image-analysis.app.baizhi.cloud/openapi/v1/image/describe

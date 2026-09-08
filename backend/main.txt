@@ -1,0 +1,141 @@
+from fastapi import FastAPI, UploadFile, File, Query
+import json
+import os
+import re
+from dotenv import load_dotenv
+from utils.redis_client import redis_client
+from utils.rag_kb import load_math_kb
+from utils.image_recognize import recognize_formula_image
+from langchain_openai import ChatOpenAI
+
+load_dotenv()
+app = FastAPI(title="Math‑Agent后端")
+
+ZHIPU_API_KEY = os.getenv("ZHIPU_API_KEY", "")
+LLM_MODEL = os.getenv("LLM_MODEL", "glm-4.7-flash")
+
+llm = ChatOpenAI(
+    api_key=ZHIPU_API_KEY,
+    base_url="https://open.bigmodel.cn/api/paas/v4/",
+    model=LLM_MODEL,
+    temperature=0.3
+)
+
+# JS 0x十六进制转十进制 解决json解析报错
+def hex_js_to_decimal(text: str) -> str:
+    pattern = re.compile(r"0x[0-9a-fA-F]+")
+    def replace_hex(match):
+        return str(int(match.group(), 16))
+    return pattern.sub(replace_hex, text)
+
+
+# 1.文字录入题目 【全部普通短横线 -】
+@app.post("/api/text-question")
+async def text_question(
+    session_id: str = Query(...),
+    question: str = Query(...)
+):
+    key = f"session:{session_id}"
+    history_raw = redis_client.get(key)
+    history = json.loads(history_raw) if history_raw else []
+    history.append({"role":"user","content":question})
+    redis_client.set(key, json.dumps(history))
+    return {"ok":True, "session_id":session_id}
+
+
+# 2.图片上传OCR识别录入题目
+@app.post("/api/upload-image")
+async def upload_image_question(
+    session_id: str = Query(...),
+    file: UploadFile = File(...)
+):
+    img_bytes = await file.read()
+    try:
+        q_text = recognize_formula_image(img_bytes)
+    except Exception as e:
+        return {"ok":False,"error":f"图片识别失败:{str(e)}"}
+    key = f"session:{session_id}"
+    history_raw = redis_client.get(key)
+    history = json.loads(history_raw) if history_raw else []
+    history.append({"role":"user","content":q_text})
+    redis_client.set(key, json.dumps(history))
+    return {"ok":True,"session_id":session_id,"ocr_text":q_text}
+
+
+#3.获取会话
+@app.get("/api/session/{session_id}")
+async def get_session(session_id:str):
+    key = f"session:{session_id}"
+    data = redis_client.get(key)
+    if not data:
+        return {"ok":True,"history":[]}
+    return {"ok":True,"history":json.loads(data)}
+
+
+#4.清空会话
+@app.delete("/api/session/{session_id}")
+async def del_session(session_id:str):
+    redis_client.delete(f"session:{session_id}")
+    return {"ok":True}
+
+
+#5.核心Agent运行接口
+@app.post("/api/agent-run")
+async def agent_run(session_id:str=Query(...)):
+    key = f"session:{session_id}"
+    history_raw = redis_client.get(key)
+    if not history_raw:
+        return {"ok":False,"error":"会话不存在，请先输入题目"}
+    history = json.loads(history_raw)
+    user_question = history[-1]["content"]
+
+    kb_list = load_math_kb()
+
+    system_prompt = f"""
+你是数学几何可视化Agent。
+已知知识库例题列表：
+{json.dumps(kb_list,ensure_ascii=False)}
+
+用户问题：{user_question}
+
+规则：
+1.判断用户题目是否和知识库内例题高度匹配。
+-匹配命中：hit_kb=true，直接复用该条qid、analysis、image_path、threejs_anim
+-不命中：hit_kb=false，qid为空字符串，image_path为空字符串，你自己生成analysis解题解析，同时生成threejs_anim三维动画帧。
+2.输出严格JSON，不要```json标记，直接输出json对象。
+3.color颜色字段不要0x十六进制，输出十进制数字。
+
+输出字段约定：
+{{
+"hit_kb":布尔,
+"qid":"字符串",
+"analysis":"解题文字解析",
+"image_path":"字符串",
+"threejs_anim":{{"title":"演示标题","frames":[{{camera:{{position:[x,y,z],lookAt:[x,y,z]}},objects:[...]}}]}}
+}}
+"""
+    messages = [{"role":"system","content":system_prompt}] + history
+    try:
+        resp = llm.invoke(messages)
+        raw_text = resp.content.strip()
+        raw_text = hex_js_to_decimal(raw_text)
+        result = json.loads(raw_text)
+        return {
+            "ok":True,
+            "hit_kb":result.get("hit_kb"),
+            "qid":result.get("qid",""),
+            "analysis":result.get("analysis",""),
+            "image_path":result.get("image_path",""),
+            "threejs_anim":result.get("threejs_anim",{})
+        }
+    except Exception as e:
+        return {
+            "ok":False,
+            "error":"大模型调用或者JSON解析失败",
+            "llm_raw":resp.content if 'resp' in locals() else "",
+            "detail":str(e)
+        }
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app,host="0.0.0.0",port=8000)

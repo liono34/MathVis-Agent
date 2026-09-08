@@ -1,0 +1,51 @@
+import os
+import requests
+from dotenv import load_dotenv
+
+load_dotenv()
+BAIZHI_API_KEY = os.getenv("BAIZHI_API_KEY")
+BAIZHI_API_BASE = os.getenv("BAIZHI_API_BASE")
+
+UPLOAD_ENDPOINT = f"{BAIZHI_API_BASE}/image/uploads"
+DESCRIBE_ENDPOINT = f"{BAIZHI_API_BASE}/image/describe"
+
+def recognize_math_image(image_bytes: bytes) -> str:
+    headers = {
+        "Authorization": f"Bearer {BAIZHI_API_KEY}"
+    }
+
+    # 1.上传图片到百智oss
+    files = {"file": ("temp.jpg", image_bytes, "image/jpeg")}
+    upload_resp = requests.post(UPLOAD_ENDPOINT, headers=headers, files=files)
+    print("【DEBUG上传】status=", upload_resp.status_code)
+    print("【DEBUG上传】resp=", upload_resp.text)
+    upload_resp.raise_for_status()
+    upload_json = upload_resp.json()
+
+    try:
+        image_url = upload_json["data"]["url"]
+    except (KeyError, TypeError):
+        raise Exception(f"上传图片成功，但拿不到图片url：{upload_json}")
+
+    # 2.调用图片理解接口
+    payload = {
+        "image_url": image_url,
+        "prompt": "完整识别图片里面全部数学题干、微分方程、公式、文字，原样输出全部内容，不要总结，不要改写，只输出识别出的文本。"
+    }
+    desc_resp = requests.post(DESCRIBE_ENDPOINT, headers=headers, json=payload)
+    print("【DEBUG识别】status=", desc_resp.status_code)
+    print("【DEBUG识别】resp=", desc_resp.text)
+    desc_resp.raise_for_status()
+    desc_json = desc_resp.json()
+
+    # 适配百智真实返回结构 data.text
+    content = ""
+    if desc_json.get("data") and isinstance(desc_json["data"], dict):
+        content = desc_json["data"].get("text", "")
+
+    content = str(content).strip()
+    if not content:
+        raise Exception(f"接口调用成功，但是没有识别出文本，返回体：{desc_json}")
+
+    return content
+
