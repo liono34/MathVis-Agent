@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MathVis‑Agent · 数学几何可视化智能解题</title>
+  <link rel="icon" href="data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230b1e3f'/><text x='16' y='23' font-size='19' text-anchor='middle' fill='%23ffffff' font-family='Georgia,serif'>√</text></svg>" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="cover-page">
+  <!-- 动态数学风背景:坐标纸网格缓慢流动 + 光晕 + 漂浮数学符号(仅装饰) -->
+  <div class="bg-deco" aria-hidden="true">
+    <div class="bg-grid"></div>
+    <div class="aurora aurora-1"></div>
+    <div class="aurora aurora-2"></div>
+    <div class="aurora aurora-3"></div>
+    <span class="math-glyph g1">∫</span>
+    <span class="math-glyph g2">∑</span>
+    <span class="math-glyph g3">∂</span>
+    <span class="math-glyph g4">π</span>
+    <span class="math-glyph g5">√</span>
+    <span class="math-glyph g6">θ</span>
+    <span class="math-glyph g7">α</span>
+    <span class="math-glyph g8">Δ</span>
+    <span class="math-glyph g9">φ</span>
+    <span class="math-glyph g10">lim</span>
+    <span class="math-glyph g11">e</span>
+    <span class="math-glyph g12">≅</span>
+  </div>
+
+  <div class="cover">
+    <div class="cover-badge">数学几何可视化 Agent 平台</div>
+
+    <div class="cover-brand">
+      <span class="brand-mark brand-mark-lg" aria-hidden="true">√</span>
+      <h1 class="cover-title">MathVis‑Agent</h1>
+      <p class="cover-sub">输入题目 · 拍照识别 · 获得自然语言解题推导与三维动画演示</p>
+    </div>
+
+    <div class="cover-features">
+      <div class="feature">
+        <span class="feature-dot dot-text">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 6.5h16M4 12h10M4 17.5h13"></path>
+          </svg>
+        </span>
+        <p>自然语言<br />解题推导</p>
+      </div>
+      <div class="feature">
+        <span class="feature-dot dot-cube">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2.5l8.5 5v9L12 21.5l-8.5-5v-9l8.5-5z"></path>
+            <path d="M3.8 7.4L12 12l8.2-4.6M12 12v9.5"></path>
+          </svg>
+        </span>
+        <p>三维几何<br />动画演示</p>
+      </div>
+      <div class="feature">
+        <span class="feature-dot dot-img">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2.5"></rect>
+            <circle cx="8.5" cy="10" r="1.6"></circle>
+            <path d="M21 15.5l-4.5-4.5L5 21"></path>
+          </svg>
+        </span>
+        <p>拍照上传<br />公式识别</p>
+      </div>
+    </div>
+
+    <a href="main.html" class="cover-cta">开始搜题</a>
+    <p class="cover-hint">点击进入搜题页,输入题目或上传图片开始推导</p>
+  </div>
+
+  <footer class="footer">
+    MathVis-Agent · 数学几何可视化
+  </footer>
+</body>
+</html>

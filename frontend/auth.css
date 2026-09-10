@@ -1,0 +1,287 @@
+/* ==========================================================================
+   登录 / 注册页样式（auth.html）
+   说明：项目原有的 styles.css 已被误覆盖成 JS 代码，这里单独为认证页提供样式，
+   未改动 styles.css。文件末尾另含主页面顶栏账号区域的一小段样式（.account-*）。
+   ========================================================================== */
+
+:root {
+  --auth-navy: #0b1e3f;
+  --auth-navy-soft: #16376b;
+  --auth-accent: #2f6df6;
+  --auth-accent-soft: #e8efff;
+  --auth-text: #1b2437;
+  --auth-muted: #6b7793;
+  --auth-line: #dfe5f1;
+  --auth-danger: #d64545;
+  --auth-ok: #1f8a53;
+}
+
+* { box-sizing: border-box; }
+
+body.auth-page {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+  color: var(--auth-text);
+  background: radial-gradient(circle at 20% 15%, #eef4ff 0%, #f7f9fc 45%, #eef1f7 100%);
+  overflow-x: hidden;
+}
+
+/* ---------- 背景装饰 ---------- */
+.auth-bg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+
+.auth-grid {
+  position: absolute;
+  inset: -20%;
+  background-image:
+    linear-gradient(rgba(47, 109, 246, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(47, 109, 246, 0.07) 1px, transparent 1px);
+  background-size: 44px 44px;
+  transform: rotate(8deg);
+}
+
+.auth-glow {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+}
+.glow-1 { top: -120px; left: -80px; background: rgba(47, 109, 246, 0.35); }
+.glow-2 { bottom: -140px; right: -60px; background: rgba(11, 30, 63, 0.28); }
+
+.auth-glyph {
+  position: absolute;
+  font-family: Georgia, "Times New Roman", serif;
+  color: rgba(11, 30, 63, 0.07);
+  user-select: none;
+}
+.glyph-1 { top: 12%; left: 12%; font-size: 120px; }
+.glyph-2 { top: 62%; left: 8%; font-size: 90px; }
+.glyph-3 { top: 20%; right: 12%; font-size: 104px; }
+.glyph-4 { bottom: 14%; right: 16%; font-size: 130px; }
+
+/* ---------- 卡片 ---------- */
+.auth-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  padding: 32px 30px 22px;
+  background: #ffffff;
+  border: 1px solid var(--auth-line);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(11, 30, 63, 0.14);
+}
+
+.auth-brand { text-align: center; margin-bottom: 22px; }
+
+.auth-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--auth-navy);
+  color: #fff;
+  font-family: Georgia, serif;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.auth-title {
+  margin: 12px 0 4px;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  color: var(--auth-navy);
+}
+
+.auth-sub { margin: 0; font-size: 13px; color: var(--auth-muted); }
+
+/* ---------- 标签页 ---------- */
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 4px;
+  margin-bottom: 20px;
+  background: #f2f5fb;
+  border-radius: 12px;
+}
+
+.auth-tab {
+  padding: 9px 0;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--auth-muted);
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+}
+.auth-tab:hover { color: var(--auth-text); }
+.auth-tab.active {
+  background: #fff;
+  color: var(--auth-navy);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(11, 30, 63, 0.1);
+}
+
+/* ---------- 表单 ---------- */
+.auth-form { display: flex; flex-direction: column; gap: 14px; }
+.auth-form.hidden { display: none; }
+
+.auth-field { display: flex; flex-direction: column; gap: 6px; }
+
+.field-label { font-size: 13px; color: var(--auth-muted); }
+
+.auth-field input[type="text"],
+.auth-field input[type="password"] {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--auth-line);
+  border-radius: 10px;
+  background: #fbfcfe;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--auth-text);
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+}
+.auth-field input::placeholder { color: #a9b2c6; }
+.auth-field input:focus {
+  border-color: var(--auth-accent);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(47, 109, 246, 0.15);
+}
+
+.auth-submit {
+  margin-top: 4px;
+  padding: 12px 0;
+  border: none;
+  border-radius: 11px;
+  background: linear-gradient(180deg, var(--auth-navy-soft), var(--auth-navy));
+  color: #fff;
+  font-size: 15px;
+  font-family: inherit;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.18s, opacity 0.18s;
+}
+.auth-submit:hover:not(:disabled) {
+  box-shadow: 0 10px 22px rgba(11, 30, 63, 0.24);
+  transform: translateY(-1px);
+}
+.auth-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ---------- 身份选择 ---------- */
+.role-block { display: flex; flex-direction: column; gap: 8px; }
+
+.role-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.role-option { position: relative; cursor: pointer; }
+.role-option input { position: absolute; opacity: 0; pointer-events: none; }
+
+.role-face {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 1px solid var(--auth-line);
+  border-radius: 11px;
+  background: #fbfcfe;
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+}
+.role-face strong { font-size: 14px; color: var(--auth-text); }
+.role-face em { font-size: 12px; font-style: normal; color: var(--auth-muted); }
+
+.role-option input:checked + .role-face {
+  border-color: var(--auth-accent);
+  background: var(--auth-accent-soft);
+  box-shadow: 0 0 0 3px rgba(47, 109, 246, 0.12);
+}
+.role-option input:focus-visible + .role-face { box-shadow: 0 0 0 3px rgba(47, 109, 246, 0.3); }
+
+.role-tip {
+  margin: 0;
+  padding: 9px 11px;
+  border-left: 3px solid var(--auth-accent);
+  border-radius: 6px;
+  background: var(--auth-accent-soft);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--auth-navy-soft);
+}
+.role-tip.hidden { display: none; }
+
+/* ---------- 提示信息 ---------- */
+.auth-msg {
+  margin-top: 16px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  word-break: break-all;
+}
+.auth-msg.hidden { display: none; }
+.auth-msg.is-error { background: #fdeaea; color: var(--auth-danger); border: 1px solid #f6cccc; }
+.auth-msg.is-ok { background: #e8f6ee; color: var(--auth-ok); border: 1px solid #c8e8d5; }
+.auth-msg.is-info { background: var(--auth-accent-soft); color: var(--auth-navy-soft); border: 1px solid #d3e0fb; }
+
+.auth-foot {
+  margin: 20px 0 0;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--auth-muted);
+}
+.auth-foot a { color: var(--auth-navy-soft); text-decoration: none; }
+.auth-foot a:hover { text-decoration: underline; }
+.auth-foot .dot { margin: 0 8px; color: #c3cbdb; }
+
+/* ==========================================================================
+   主页面（main.html）顶栏账号区域样式，仅覆盖登录相关控件
+   ========================================================================== */
+.account-bar { display: flex; align-items: center; gap: 10px; }
+
+.account-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(11, 30, 63, 0.06);
+  font-size: 13px;
+  color: #16376b;
+  white-space: nowrap;
+}
+.account-chip .account-role {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #0b1e3f;
+  color: #fff;
+  font-size: 11px;
+}
+
+.account-logout {
+  padding: 6px 14px;
+  border: 1px solid #dfe5f1;
+  border-radius: 8px;
+  background: #fff;
+  color: #1b2437;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.18s, color 0.18s, box-shadow 0.18s;
+}
+.account-logout:hover {
+  border-color: #2f6df6;
+  color: #16376b;
+  box-shadow: 0 4px 12px rgba(11, 30, 63, 0.12);
+}

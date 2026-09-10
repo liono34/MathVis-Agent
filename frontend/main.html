@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MathVis-Agent · 数学几何可视化</title>
+  <link rel="icon" href="data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230b1e3f'/><text x='16' y='23' font-size='19' text-anchor='middle' fill='%23ffffff' font-family='Georgia,serif'>√</text></svg>" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar" style="display:flex;align-items:center;gap:16px;padding:12px 24px;border-bottom:1px solid #e5e7eb;background:#fff;">
+    <strong style="font-size:18px;color:#0b1e3f;">MathVis-Agent · 数学几何可视化</strong>
+    <div id="userBar" style="margin-left:auto;display:flex;align-items:center;gap:12px;">
+      <span id="userInfo" style="font-size:14px;color:#374151;"></span>
+      <button id="logoutBtn" type="button"
+        style="padding:5px 14px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;">退出登录</button>
+    </div>
+  </header>
+
+  <main class="result-area" style="max-width:1200px;margin:0 auto;padding:20px;display:grid;grid-template-columns:380px 1fr;gap:20px;align-items:start;">
+    <!-- 左侧输入区 -->
+    <section style="display:flex;flex-direction:column;gap:14px;">
+      <div class="panel" style="border:1px solid #e5e7eb;border-radius:10px;padding:16px;background:#fff;">
+        <h3 style="margin:0 0 10px;">输入题目</h3>
+        <textarea id="questionInput" rows="4" placeholder="请输入数学题，Ctrl+Enter 提交，例如：求lnx在[1,2]上的定积分"
+          style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;resize:vertical;"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+          <button id="submitBtn" type="button"
+            style="padding:8px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;cursor:pointer;">开始推导</button>
+          <button id="resetBtn" type="button"
+            style="padding:8px 16px;background:#fff;border:1px solid #d1d5db;border-radius:8px;cursor:pointer;">换题清空</button>
+        </div>
+        <div id="statusText" style="margin-top:8px;font-size:13px;color:#6b7280;">就绪</div>
+        <div id="errorBanner" class="hidden" style="margin-top:8px;font-size:13px;color:#b91c1c;"></div>
+      </div>
+
+      <div class="panel" style="border:1px solid #e5e7eb;border-radius:10px;padding:16px;background:#fff;">
+        <h3 style="margin:0 0 10px;">待识别的题目图片</h3>
+        <div id="dropzone"
+          style="border:2px dashed #cbd5e1;border-radius:8px;padding:18px;text-align:center;cursor:pointer;color:#64748b;">
+          <div id="dzEmpty">点击选择或拖拽图片到此处 · jpg / png / webp</div>
+          <div id="dzPreview" class="hidden" style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+            <img id="imagePreview" style="max-width:100%;max-height:160px;border-radius:6px;" />
+            <span id="imageName" style="font-size:13px;"></span>
+            <button id="removeImageBtn" type="button"
+              style="padding:4px 10px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;">移除图片</button>
+          </div>
+          <input id="imageInput" type="file" accept="image/*" hidden />
+        </div>
+        <button id="ocrBtn" type="button" disabled
+          style="margin-top:10px;padding:8px 16px;background:#0b1e3f;color:#fff;border:none;border-radius:8px;cursor:pointer;">识别图片</button>
+      </div>
+    </section>
+
+    <!-- 右侧结果区 -->
+    <section style="display:flex;flex-direction:column;gap:14px;">
+      <div id="textPanel" class="panel hidden" style="border:1px solid #e5e7eb;border-radius:10px;padding:16px;background:#fff;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <h3 style="margin:0;">解题推导</h3>
+          <span id="metaLine" style="font-size:12px;color:#6b7280;"></span>
+        </div>
+        <div id="analysisText" style="font-size:15px;line-height:1.7;white-space:pre-wrap;"></div>
+      </div>
+
+      <div id="threejsPanel" class="panel hidden" style="border:1px solid #e5e7eb;border-radius:10px;padding:16px;background:#fff;">
+        <h3 style="margin:0 0 10px;">可视化演示</h3>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+          <button id="btnScreenshot" type="button"
+            style="padding:6px 12px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;">截图导出</button>
+          <button id="btnRecordStart" type="button"
+            style="padding:6px 12px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;">开始录制</button>
+          <button id="btnRecordStop" type="button" class="hidden"
+            style="padding:6px 12px;border:1px solid #b91c1c;color:#b91c1c;border-radius:6px;background:#fff;cursor:pointer;">停止录制</button>
+          <span id="recordStatus" class="hidden" style="color:#b91c1c;font-size:13px;">● 正在录制</span>
+        </div>
+        <div id="threejsCanvasHolder"
+          style="width:100%;height:420px;background:#f6f8fa;border-radius:8px;overflow:hidden;position:relative;"></div>
+        <div id="paramControlPanel" style="margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer style="text-align:center;color:#9ca3af;font-size:13px;padding:20px;">
+    MathVis-Agent · 数学几何可视化
+  </footer>
+
+  <!-- Three.js（国内可用CDN） -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/three.js/0.160.0/three.min.js"></script>
+
+  <!-- 登录态工具 + 未登录拦截（必须在 app.js 之前） -->
+  <script src="auth-store.js"></script>
+  <script>
+    if (window.MathVisAuth) window.MathVisAuth.requireLogin();
+  </script>
+  <script src="app.js"></script>
+
+  <!-- 顶部用户信息与退出 -->
+  <script>
+    (function () {
+      if (!window.MathVisAuth) return;
+      var u = window.MathVisAuth.getUser();
+      var info = document.getElementById("userInfo");
+      if (u && info) {
+        info.textContent = "你好，" + u.username + "（" + window.MathVisAuth.roleLabel(u.role) + "）";
+      }
+      var btn = document.getElementById("logoutBtn");
+      if (btn) btn.onclick = function () {
+        if (confirm("确定退出登录？")) window.MathVisAuth.logout();
+      };
+    })();
+  </script>
+</body>
+</html>

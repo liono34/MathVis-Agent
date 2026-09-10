@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, Query
+from fastapi.middleware.cors import CORSMiddleware
 import json
 import os
 import re
@@ -9,7 +10,17 @@ from utils.image_recognize import recognize_formula_image
 from langchain_openai import ChatOpenAI
 
 load_dotenv()
+
 app = FastAPI(title="Math‑Agent后端")
+
+# 跨域中间件，给前端页面访问使用
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 ZHIPU_API_KEY = os.getenv("ZHIPU_API_KEY", "")
 LLM_MODEL = os.getenv("LLM_MODEL", "glm-4.7-flash")
@@ -28,8 +39,7 @@ def hex_js_to_decimal(text: str) -> str:
         return str(int(match.group(), 16))
     return pattern.sub(replace_hex, text)
 
-
-# 1.文字录入题目 【全部普通短横线 -】
+# 1.文字录入题目
 @app.post("/api/text-question")
 async def text_question(
     session_id: str = Query(...),
@@ -41,7 +51,6 @@ async def text_question(
     history.append({"role":"user","content":question})
     redis_client.set(key, json.dumps(history))
     return {"ok":True, "session_id":session_id}
-
 
 # 2.图片上传OCR识别录入题目
 @app.post("/api/upload-image")
@@ -61,7 +70,6 @@ async def upload_image_question(
     redis_client.set(key, json.dumps(history))
     return {"ok":True,"session_id":session_id,"ocr_text":q_text}
 
-
 #3.获取会话
 @app.get("/api/session/{session_id}")
 async def get_session(session_id:str):
@@ -71,13 +79,11 @@ async def get_session(session_id:str):
         return {"ok":True,"history":[]}
     return {"ok":True,"history":json.loads(data)}
 
-
 #4.清空会话
 @app.delete("/api/session/{session_id}")
 async def del_session(session_id:str):
     redis_client.delete(f"session:{session_id}")
     return {"ok":True}
-
 
 #5.核心Agent运行接口
 @app.post("/api/agent-run")
@@ -95,16 +101,13 @@ async def agent_run(session_id:str=Query(...)):
 你是数学几何可视化Agent。
 已知知识库例题列表：
 {json.dumps(kb_list,ensure_ascii=False)}
-
 用户问题：{user_question}
-
 规则：
 1.判断用户题目是否和知识库内例题高度匹配。
 -匹配命中：hit_kb=true，直接复用该条qid、analysis、image_path、threejs_anim
 -不命中：hit_kb=false，qid为空字符串，image_path为空字符串，你自己生成analysis解题解析，同时生成threejs_anim三维动画帧。
 2.输出严格JSON，不要```json标记，直接输出json对象。
 3.color颜色字段不要0x十六进制，输出十进制数字。
-
 输出字段约定：
 {{
 "hit_kb":布尔,
@@ -139,3 +142,4 @@ async def agent_run(session_id:str=Query(...)):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app,host="0.0.0.0",port=8000)
+

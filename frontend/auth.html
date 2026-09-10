@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>登录 / 注册 · MathVis‑Agent</title>
+  <link rel="icon" href="data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230b1e3f'/><text x='16' y='23' font-size='19' text-anchor='middle' fill='%23ffffff' font-family='Georgia,serif'>√</text></svg>" />
+  <link rel="stylesheet" href="auth.css" />
+</head>
+<body class="auth-page">
+  <div class="auth-bg" aria-hidden="true">
+    <div class="auth-grid"></div>
+    <div class="auth-glow glow-1"></div>
+    <div class="auth-glow glow-2"></div>
+    <span class="auth-glyph glyph-1">∫</span>
+    <span class="auth-glyph glyph-2">π</span>
+    <span class="auth-glyph glyph-3">∑</span>
+    <span class="auth-glyph glyph-4">√</span>
+  </div>
+
+  <main class="auth-card">
+    <div class="auth-brand">
+      <span class="auth-mark" aria-hidden="true">√</span>
+      <h1 class="auth-title">MathVis‑Agent</h1>
+      <p class="auth-sub">登录后开始数学几何可视化解题</p>
+    </div>
+
+    <div class="auth-tabs" role="tablist">
+      <button type="button" id="tabLogin" class="auth-tab active" role="tab" aria-selected="true">登录</button>
+      <button type="button" id="tabRegister" class="auth-tab" role="tab" aria-selected="false">注册</button>
+    </div>
+
+    <!-- 登录 -->
+    <form id="loginForm" class="auth-form" novalidate>
+      <label class="auth-field">
+        <span class="field-label">用户名</span>
+        <input type="text" id="loginUsername" autocomplete="username" placeholder="请输入用户名" />
+      </label>
+      <label class="auth-field">
+        <span class="field-label">密码</span>
+        <input type="password" id="loginPassword" autocomplete="current-password" placeholder="请输入密码" />
+      </label>
+      <button type="submit" id="loginSubmit" class="auth-submit">登 录</button>
+    </form>
+
+    <!-- 注册 -->
+    <form id="registerForm" class="auth-form hidden" novalidate>
+      <label class="auth-field">
+        <span class="field-label">用户名</span>
+        <input type="text" id="regUsername" autocomplete="username" placeholder="3-20位中英文、数字或下划线" />
+      </label>
+      <label class="auth-field">
+        <span class="field-label">密码</span>
+        <input type="password" id="regPassword" autocomplete="new-password" placeholder="6-64位" />
+      </label>
+      <label class="auth-field">
+        <span class="field-label">确认密码</span>
+        <input type="password" id="regPassword2" autocomplete="new-password" placeholder="再次输入密码" />
+      </label>
+
+      <div class="role-block">
+        <span class="field-label">选择身份</span>
+        <div class="role-picker">
+          <label class="role-option">
+            <input type="radio" name="role" value="student" checked />
+            <span class="role-face">
+              <strong>学生</strong>
+              <em>注册后即可使用</em>
+            </span>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="role" value="teacher" />
+            <span class="role-face">
+              <strong>老师</strong>
+              <em>需管理员审核</em>
+            </span>
+          </label>
+        </div>
+        <p id="roleTip" class="role-tip hidden">老师账号提交后需管理员审核通过才能登录，审核期间无法使用平台功能。</p>
+      </div>
+
+      <button type="submit" id="registerSubmit" class="auth-submit">注 册</button>
+    </form>
+
+    <div id="authMsg" class="auth-msg hidden" role="alert"></div>
+
+    <p class="auth-foot">
+      <a href="index.html">返回首页</a>
+      <span class="dot">·</span>
+      <a href="main.html">直接进入搜题页</a>
+    </p>
+  </main>
+
+  <script src="auth-store.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>
